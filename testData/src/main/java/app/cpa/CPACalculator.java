@@ -6,8 +6,6 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 
-import com.vividsolutions.jts.geom.Coordinate;
-
 import ais.AISMessage;
 import app.datamodel.CPAResult;
 
@@ -107,9 +105,6 @@ public class CPACalculator {
 		double otherSOG = message2.getSog() * 0.5144444444444445;
 
 		// create coordinates
-		Coordinate ownCoord = new Coordinate(message1.getLat(), message1.getLon());
-		Coordinate otherCoord = new Coordinate(message2.getLat(), message2.getLon());
-
 		gc.setStartingGeographicPoint(message1.getLon(), message1.getLat());
 		gc.setDestinationGeographicPoint(message2.getLon(), message2.getLat());
 

@@ -25,6 +25,7 @@ public class CSVReader {
 	public static VesselContainer readLargeCSV(VesselContainer container) {
 
 		try {
+			@SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new FileReader(CSV_LOCATION_LARGE));
 
 			while ((LINE = reader.readLine()) != null) {
@@ -82,6 +83,7 @@ public class CSVReader {
 	public static VesselContainer readSmallCSV(VesselContainer container) {
 
 		try {
+			@SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new FileReader(CSV_LOCATION_SMALL));
 
 			while ((LINE = reader.readLine()) != null) {

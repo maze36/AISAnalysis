@@ -6,9 +6,6 @@ import ais.AISMessage;
 
 public class CPAResult implements Comparable<CPAResult> {
 
-	private AISMessage message1;
-	private AISMessage message2;
-
 	double cpaDistance;
 	double cpaTime;
 
@@ -33,8 +30,6 @@ public class CPAResult implements Comparable<CPAResult> {
 	public CPAResult(AISMessage message1, AISMessage message2, double cpaDistance, double cpaTime, Point2D ownShipCPA,
 			Point2D otherShipCPA) {
 		super();
-		this.message1 = message1;
-		this.message2 = message2;
 		this.cpaDistance = cpaDistance;
 		this.cpaTime = cpaTime;
 		this.ownShipCPA = ownShipCPA;
