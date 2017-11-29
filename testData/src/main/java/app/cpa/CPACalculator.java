@@ -9,8 +9,6 @@ import org.geotools.referencing.crs.DefaultGeographicCRS;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import ais.AISMessage;
-import app.OwnShip;
-import app.TargetShip;
 import app.datamodel.CPAResult;
 
 /**
