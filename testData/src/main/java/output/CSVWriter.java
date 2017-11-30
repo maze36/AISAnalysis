@@ -25,6 +25,12 @@ public class CSVWriter {
 		sb.append(',');
 		sb.append("sogV1");
 		sb.append(',');
+		sb.append("sogV2");
+		sb.append(',');
+		sb.append("cogV1");
+		sb.append(',');
+		sb.append("cogV2");
+		sb.append(',');
 		sb.append("realDCPA");
 		sb.append(',');
 		sb.append("predictedDCPA");
