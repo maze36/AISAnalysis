@@ -23,6 +23,8 @@ public class CSVWriter {
 		sb.append(',');
 		sb.append("lonV2");
 		sb.append(',');
+		sb.append("sogV1");
+		sb.append(',');
 		sb.append("realDCPA");
 		sb.append(',');
 		sb.append("predictedDCPA");
