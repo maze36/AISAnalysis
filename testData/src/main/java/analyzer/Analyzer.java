@@ -1,4 +1,4 @@
-package app;
+package analyzer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -10,8 +10,8 @@ import com.vividsolutions.jts.geom.Coordinate;
 
 import ais.AISMessage;
 import ais.Vessel;
-import app.datamodel.Interval;
-import app.datamodel.Track;
+import datamodel.Interval;
+import datamodel.Track;
 import output.Encounter;
 
 public class Analyzer {

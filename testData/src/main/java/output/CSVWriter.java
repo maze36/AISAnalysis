@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import ais.AISMessage;
-import app.datamodel.EvaluationObject;
+import datamodel.EvaluationObject;
 
 public class CSVWriter {
 

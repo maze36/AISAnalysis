@@ -1,4 +1,4 @@
-package app.datamodel;
+package datamodel;
 
 import java.awt.geom.Point2D;
 

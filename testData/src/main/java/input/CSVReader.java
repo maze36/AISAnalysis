@@ -13,7 +13,7 @@ import java.util.Locale;
 import ais.AISMessage;
 import ais.Vessel;
 import ais.VesselContainer;
-import app.datamodel.Track;
+import datamodel.Track;
 
 public class CSVReader {
 

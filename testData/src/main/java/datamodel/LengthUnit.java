@@ -1,4 +1,4 @@
-package app.datamodel;
+package datamodel;
 
 public enum LengthUnit {
 	METER, NAUTICALMILES;

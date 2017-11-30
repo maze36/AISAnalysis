@@ -4,11 +4,13 @@ import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
+import ais.AISMessage;
 import ais.Vessel;
 import ais.VesselContainer;
-import app.cpa.CPAPredictor;
-import app.datamodel.EvaluationObject;
-import app.datamodel.Track;
+import analyzer.Analyzer;
+import analyzer.cpa.CPAPredictor;
+import datamodel.EvaluationObject;
+import datamodel.Track;
 import input.CSVReader;
 import output.CSVWriter;
 import output.Encounter;
@@ -21,19 +23,7 @@ public class Application {
 
 		ArrayList<Encounter> result = new ArrayList<Encounter>();
 
-		VesselContainer container = new VesselContainer();
-
-		container = CSVReader.readLargeCSV(container);
-
-		cleanTrackList(container);
-
-		System.out.println("Finished Reading in: " + new Timestamp(System.currentTimeMillis()));
-
-		for (Vessel vessel : container.getVesselContainer()) {
-			vessel.sortAISMessages();
-		}
-
-		System.out.println("Finished Sorting " + new Timestamp(System.currentTimeMillis()));
+		VesselContainer container = fillVesselContainer();
 
 		Analyzer analyzer = new Analyzer();
 
@@ -44,9 +34,6 @@ public class Application {
 							container.getVesselContainer().get(j));
 					if (res != null) {
 						result.add(res);
-						if (res.getdCPA() > 1.5) {
-							System.out.println();
-						}
 					}
 				}
 			}
@@ -87,6 +74,26 @@ public class Application {
 			}
 			vessel.getTracks().removeAll(tracksToRemove);
 		}
+
+	}
+
+	/**
+	 * Reads the AIS message in and returns the {@link VesselContainer} with sorted
+	 * {@link AISMessage}.
+	 * 
+	 * @return {@link VesselContainer}
+	 */
+	private static VesselContainer fillVesselContainer() {
+		VesselContainer container = new VesselContainer();
+
+		container = CSVReader.readLargeCSV(container);
+		cleanTrackList(container);
+
+		for (Vessel vessel : container.getVesselContainer()) {
+			vessel.sortAISMessages();
+		}
+
+		return container;
 
 	}
 

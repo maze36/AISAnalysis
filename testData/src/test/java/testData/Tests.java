@@ -9,7 +9,7 @@ import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
 
-import app.datamodel.Track;
+import datamodel.Track;
 
 public class Tests {
 
