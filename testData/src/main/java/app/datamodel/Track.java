@@ -3,8 +3,6 @@ package app.datamodel;
 import java.util.ArrayList;
 import java.util.Date;
 
-import ais.AISMessage;
-
 public class Track {
 
 	private int id;

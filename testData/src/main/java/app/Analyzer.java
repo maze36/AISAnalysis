@@ -8,10 +8,10 @@ import org.geotools.referencing.GeodeticCalculator;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import ais.AISMessage;
-import ais.Vessel;
+import app.datamodel.AISMessage;
 import app.datamodel.Interval;
 import app.datamodel.Track;
+import app.datamodel.Vessel;
 import output.Encounter;
 
 public class Analyzer {
@@ -22,6 +22,14 @@ public class Analyzer {
 		this.calculator = new GeodeticCalculator();
 	}
 
+	/**
+	 * Returns a pair of {@link Vessel} if their {@link AISMessage} occurred
+	 * almost at the same time and if their CPA falls below a certain threshold.
+	 * 
+	 * @param vessel1
+	 * @param vessel2
+	 * @return
+	 */
 	public Encounter findPairsByTracks(Vessel vessel1, Vessel vessel2) {
 
 		if (vessel1.getTracks().isEmpty() || vessel2.getTracks().isEmpty()) {

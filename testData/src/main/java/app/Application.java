@@ -4,11 +4,11 @@ import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
-import ais.Vessel;
-import ais.VesselContainer;
 import app.cpa.CPAPredictor;
 import app.datamodel.EvaluationObject;
 import app.datamodel.Track;
+import app.datamodel.Vessel;
+import app.datamodel.VesselContainer;
 import input.CSVReader;
 import output.CSVWriter;
 import output.Encounter;

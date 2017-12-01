@@ -10,10 +10,10 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-import ais.AISMessage;
-import ais.Vessel;
-import ais.VesselContainer;
+import app.datamodel.AISMessage;
 import app.datamodel.Track;
+import app.datamodel.Vessel;
+import app.datamodel.VesselContainer;
 
 public class CSVReader {
 

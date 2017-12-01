@@ -1,4 +1,4 @@
-package ais;
+package app.datamodel;
 
 import java.util.Date;
 

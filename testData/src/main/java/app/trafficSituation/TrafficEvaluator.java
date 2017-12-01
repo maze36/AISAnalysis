@@ -9,8 +9,8 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 
-import ais.AISMessage;
 import app.cpa.CPACalculator;
+import app.datamodel.AISMessage;
 import app.datamodel.LengthUnit;
 import app.datamodel.Situation;
 import output.Encounter;

@@ -6,7 +6,7 @@ import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
 import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 
-import ais.AISMessage;
+import app.datamodel.AISMessage;
 import app.datamodel.CPAResult;
 
 /**

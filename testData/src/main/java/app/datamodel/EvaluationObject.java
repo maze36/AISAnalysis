@@ -1,7 +1,5 @@
 package app.datamodel;
 
-import ais.AISMessage;
-
 public class EvaluationObject {
 
 	private AISMessage aisMessage1;

@@ -2,7 +2,7 @@ package app.cpa;
 
 import org.geotools.referencing.GeodeticCalculator;
 
-import ais.AISMessage;
+import app.datamodel.AISMessage;
 import app.datamodel.CPAResult;
 import app.datamodel.EvaluationObject;
 import app.trafficSituation.TrafficEvaluator;

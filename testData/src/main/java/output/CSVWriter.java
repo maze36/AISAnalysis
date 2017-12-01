@@ -7,7 +7,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import ais.AISMessage;
+import app.datamodel.AISMessage;
 import app.datamodel.EvaluationObject;
 
 public class CSVWriter {

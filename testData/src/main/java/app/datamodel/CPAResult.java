@@ -2,8 +2,6 @@ package app.datamodel;
 
 import java.awt.geom.Point2D;
 
-import ais.AISMessage;
-
 public class CPAResult implements Comparable<CPAResult> {
 
 	double cpaDistance;
