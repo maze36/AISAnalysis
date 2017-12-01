@@ -1,4 +1,4 @@
-package app.trafficSituation;
+package analyzer.trafficSituation;
 
 import java.awt.geom.Point2D;
 
@@ -9,10 +9,10 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.GeometryFactory;
 import com.vividsolutions.jts.geom.LineString;
 
-import app.cpa.CPACalculator;
+import analyzer.cpa.CPACalculator;
 import app.datamodel.AISMessage;
-import app.datamodel.LengthUnit;
-import app.datamodel.Situation;
+import datamodel.LengthUnit;
+import datamodel.Situation;
 import output.Encounter;
 
 public class TrafficEvaluator {

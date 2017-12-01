@@ -11,9 +11,9 @@ import java.util.Date;
 import java.util.Locale;
 
 import app.datamodel.AISMessage;
-import app.datamodel.Track;
 import app.datamodel.Vessel;
 import app.datamodel.VesselContainer;
+import datamodel.Track;
 
 public class CSVReader {
 

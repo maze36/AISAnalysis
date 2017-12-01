@@ -1,4 +1,6 @@
-package app.datamodel;
+package datamodel;
+
+import app.datamodel.AISMessage;
 
 public class EvaluationObject {
 

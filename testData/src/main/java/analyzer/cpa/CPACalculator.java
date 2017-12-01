@@ -1,4 +1,4 @@
-package app.cpa;
+package analyzer.cpa;
 
 import java.awt.geom.Point2D;
 
@@ -7,7 +7,7 @@ import org.geotools.referencing.GeodeticCalculator;
 import org.geotools.referencing.crs.DefaultGeographicCRS;
 
 import app.datamodel.AISMessage;
-import app.datamodel.CPAResult;
+import datamodel.CPAResult;
 
 /**
  * CPACalculator Calculation of the distance of own and target ship at their CPA

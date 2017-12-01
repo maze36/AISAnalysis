@@ -1,9 +1,9 @@
 package output;
 
 import app.datamodel.AISMessage;
-import app.datamodel.Situation;
-import app.datamodel.Track;
 import app.datamodel.Vessel;
+import datamodel.Situation;
+import datamodel.Track;
 
 public class Encounter {
 

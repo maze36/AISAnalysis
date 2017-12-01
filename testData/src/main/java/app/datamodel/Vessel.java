@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import datamodel.Track;
+
 public class Vessel {
 
 	private String mmsi;

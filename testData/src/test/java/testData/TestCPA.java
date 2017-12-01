@@ -2,9 +2,9 @@ package testData;
 
 import org.junit.Test;
 
-import app.cpa.CPACalculator;
+import analyzer.cpa.CPACalculator;
 import app.datamodel.AISMessage;
-import app.datamodel.CPAResult;
+import datamodel.CPAResult;
 
 public class TestCPA {
 

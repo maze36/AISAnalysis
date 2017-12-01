@@ -1,11 +1,11 @@
-package app.cpa;
+package analyzer.cpa;
 
 import org.geotools.referencing.GeodeticCalculator;
 
+import analyzer.trafficSituation.TrafficEvaluator;
 import app.datamodel.AISMessage;
-import app.datamodel.CPAResult;
-import app.datamodel.EvaluationObject;
-import app.trafficSituation.TrafficEvaluator;
+import datamodel.CPAResult;
+import datamodel.EvaluationObject;
 import output.Encounter;
 
 public class CPAPredictor {

@@ -1,4 +1,4 @@
-package app;
+package analyzer;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -9,9 +9,9 @@ import org.geotools.referencing.GeodeticCalculator;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import app.datamodel.AISMessage;
-import app.datamodel.Interval;
-import app.datamodel.Track;
 import app.datamodel.Vessel;
+import datamodel.Interval;
+import datamodel.Track;
 import output.Encounter;
 
 public class Analyzer {

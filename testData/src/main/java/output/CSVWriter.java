@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import app.datamodel.AISMessage;
-import app.datamodel.EvaluationObject;
+import datamodel.EvaluationObject;
 
 public class CSVWriter {
 
@@ -22,6 +22,14 @@ public class CSVWriter {
 		sb.append("latV2");
 		sb.append(',');
 		sb.append("lonV2");
+		sb.append(',');
+		sb.append("sogV1");
+		sb.append(',');
+		sb.append("sogV2");
+		sb.append(',');
+		sb.append("cogV1");
+		sb.append(',');
+		sb.append("cogV2");
 		sb.append(',');
 		sb.append("realDCPA");
 		sb.append(',');

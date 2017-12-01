@@ -1,7 +1,9 @@
-package app.datamodel;
+package datamodel;
 
 import java.util.ArrayList;
 import java.util.Date;
+
+import app.datamodel.AISMessage;
 
 public class Track {
 

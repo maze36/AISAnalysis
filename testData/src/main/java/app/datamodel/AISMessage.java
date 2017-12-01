@@ -13,6 +13,10 @@ public class AISMessage {
 	private double lat;
 	private double lon;
 
+	/**
+	 * 
+	 * @return
+	 */
 	public String getMmsi() {
 		return mmsi;
 	}
