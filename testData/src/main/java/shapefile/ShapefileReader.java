@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
@@ -12,6 +13,9 @@ import org.geotools.data.FeatureSource;
 import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.JTS;
+import org.geotools.graph.build.line.BasicLineGraphGenerator;
+import org.geotools.graph.structure.Edge;
+import org.geotools.graph.structure.Graph;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.Feature;
 import org.opengis.feature.GeometryAttribute;
@@ -24,6 +28,7 @@ import org.opengis.referencing.operation.TransformException;
 
 import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
+import com.vividsolutions.jts.geom.LineSegment;
 
 import datamodel.RTM;
 import datamodel.RTMEdge;
@@ -39,9 +44,18 @@ public class ShapefileReader {
 	 * @return
 	 */
 
-	public static RTM getRTM(String path) {
+	public static Graph getRTM(String path) {
 		ArrayList<Geometry> rtmList = readShapefile(path);
-		return buildRTM(rtmList);
+		BasicLineGraphGenerator gen = new BasicLineGraphGenerator();
+
+		for (Geometry geo : rtmList) {
+			LineSegment segment = new LineSegment(geo.getCoordinates()[0], geo.getCoordinates()[1]);
+			gen.add(segment);
+		}
+
+		Graph graph = gen.getGraph();
+
+		return graph;
 	}
 
 	private static RTM buildRTM(ArrayList<Geometry> rtmList) {
