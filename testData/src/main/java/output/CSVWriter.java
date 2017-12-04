@@ -34,12 +34,6 @@ public class CSVWriter {
 		sb.append("realDCPA");
 		sb.append(',');
 		sb.append("predictedDCPA");
-		sb.append(',');
-		sb.append("deviationV1");
-		sb.append(',');
-		sb.append("deviationV2");
-		sb.append(',');
-		sb.append("situation");
 		sb.append('\n');
 
 		for (EvaluationObject obj : evalList) {
@@ -52,15 +46,17 @@ public class CSVWriter {
 			sb.append(',');
 			sb.append(obj.getAisMessage2().getLon());
 			sb.append(',');
+			sb.append(obj.getAisMessage1().getSog());
+			sb.append(',');
+			sb.append(obj.getAisMessage2().getSog());
+			sb.append(',');
+			sb.append(obj.getAisMessage1().getCog());
+			sb.append(',');
+			sb.append(obj.getAisMessage2().getCog());
+			sb.append(',');
 			sb.append(obj.getRealDCPA());
 			sb.append(',');
 			sb.append(obj.getPredictedDCPA());
-			sb.append(',');
-			sb.append(obj.getDeviationV1());
-			sb.append(',');
-			sb.append(obj.getDeviationV2());
-			sb.append(',');
-			sb.append(obj.getSituation());
 			sb.append('\n');
 
 		}

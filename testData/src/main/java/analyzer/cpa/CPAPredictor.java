@@ -2,7 +2,6 @@ package analyzer.cpa;
 
 import org.geotools.referencing.GeodeticCalculator;
 
-import analyzer.trafficSituation.TrafficEvaluator;
 import app.datamodel.AISMessage;
 import datamodel.CPAResult;
 import datamodel.EvaluationObject;
@@ -88,7 +87,6 @@ public class CPAPredictor {
 		EvaluationObject evaluationObject = new EvaluationObject(aisMessagePredV1, aisMessagePredV2, realDistance,
 				predictedDistance, distanceV1, distanceV2);
 
-		evaluationObject.setSituation(TrafficEvaluator.rightOfWay(encounter));
 		return evaluationObject;
 
 	}
