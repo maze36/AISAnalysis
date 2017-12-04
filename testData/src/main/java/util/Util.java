@@ -19,7 +19,7 @@ public class Util {
 
 		Coordinate vesselPos = new Coordinate(aisMessage.getLat(), aisMessage.getLon());
 		double minDistance = -1;
-		double bearing = 0;
+		Edge nearestEdge = null;
 
 		for (@SuppressWarnings("rawtypes")
 		Iterator iterator = rtm.getEdges().iterator(); iterator.hasNext();) {
@@ -31,26 +31,31 @@ public class Util {
 			if (minDistance == -1) {
 				if (newDistanceNodeA < newDistanceNodeB) {
 					minDistance = newDistanceNodeA;
-					bearing = calculateBearing(vesselPos, coordNodeA);
+					nearestEdge = edge;
 				} else {
-					minDistance = newDistanceNodeB;
-					bearing = calculateBearing(vesselPos, coordNodeB);
+					minDistance = newDistanceNodeA;
+					nearestEdge = edge;
 				}
 			} else {
 				if (newDistanceNodeA < newDistanceNodeB) {
 					if (newDistanceNodeA < minDistance) {
 						minDistance = newDistanceNodeA;
-						bearing = calculateBearing(vesselPos, coordNodeA);
+						nearestEdge = edge;
 					}
 				} else {
 					if (newDistanceNodeB < minDistance) {
-						minDistance = newDistanceNodeB;
-						bearing = calculateBearing(vesselPos, coordNodeB);
+						minDistance = newDistanceNodeA;
+						nearestEdge = edge;
 					}
 				}
 			}
 		}
-		System.out.println();
+		Coordinate coordNodeA = (Coordinate) nearestEdge.getNodeA().getObject();
+		Coordinate coordNodeB = (Coordinate) nearestEdge.getNodeB().getObject();
+		double dis1 = calculateDistanceNM(vesselPos, coordNodeA);
+		double dis2 = calculateDistanceNM(vesselPos, coordNodeB);
+
+		System.out.println(nearestEdge.toString());
 		return null;
 	}
 

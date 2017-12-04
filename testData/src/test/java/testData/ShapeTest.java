@@ -15,8 +15,9 @@ public class ShapeTest {
 		Graph rtm = ShapefileReader.getRTM(t);
 
 		AISMessage aisMessage = new AISMessage();
-		aisMessage.setLat(53.4);
-		aisMessage.setLon(8.56);
+		aisMessage.setLat(53.9815);
+		aisMessage.setLon(8.1501667);
+		aisMessage.setCog(74.99);
 
 		Util.findeNearestNode(aisMessage, rtm);
 
