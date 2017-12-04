@@ -9,13 +9,12 @@ import org.geotools.referencing.GeodeticCalculator;
 import com.vividsolutions.jts.geom.Coordinate;
 
 import app.datamodel.AISMessage;
-import datamodel.RTMNode;
 
 public class Util {
 
 	private static GeodeticCalculator calculator = new GeodeticCalculator();
 
-	public static RTMNode findeNearestNode(AISMessage aisMessage, Graph rtm) {
+	public static Edge findeNearestEdge(AISMessage aisMessage, Graph rtm) {
 
 		Coordinate vesselPos = new Coordinate(aisMessage.getLat(), aisMessage.getLon());
 		double minDistance = -1;
@@ -56,7 +55,12 @@ public class Util {
 		double dis2 = calculateDistanceNM(vesselPos, coordNodeB);
 
 		System.out.println(nearestEdge.toString());
-		return null;
+		return nearestEdge;
+	}
+
+	public static void determineNode(Edge nearestEdge, AISMessage aisMessage) {
+		Coordinate vesselPosition = new Coordinate(aisMessage.getLat(), aisMessage.getLon());
+
 	}
 
 	public static double calculateDistanceNM(Coordinate start, Coordinate end) {
