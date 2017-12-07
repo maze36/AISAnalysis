@@ -9,7 +9,9 @@ import java.util.Locale;
 import org.junit.Before;
 import org.junit.Test;
 
+import app.datamodel.VesselContainer;
 import datamodel.Track;
+import input.CSVReader;
 
 public class Tests {
 
@@ -47,7 +49,11 @@ public class Tests {
 	}
 
 	@Test
-	public void testInterval() {
+	public void testVoyageReadIn() {
+		VesselContainer cont = CSVReader.readVoyageData();
+
+		cont = CSVReader.readDynamicData(cont);
+
 	}
 
 }

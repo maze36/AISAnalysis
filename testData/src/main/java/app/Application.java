@@ -24,6 +24,9 @@ public class Application {
 		ArrayList<Encounter> result = new ArrayList<Encounter>();
 
 		VesselContainer container = fillVesselContainer();
+		countTracksAndAISMessages(container);
+
+		System.out.println(container.getVesselContainer().size());
 
 		Analyzer analyzer = new Analyzer();
 
@@ -65,6 +68,7 @@ public class Application {
 
 	private static void cleanTrackList(VesselContainer container) {
 		ArrayList<Track> tracksToRemove = new ArrayList<Track>();
+		ArrayList<Vessel> vesselsToRemove = new ArrayList<Vessel>();
 		for (Vessel vessel : container.getVesselContainer()) {
 			for (Track track : vessel.getTracks()) {
 				long intervalLenght = track.getEndDate().getTime() - track.getStartDate().getTime();
@@ -73,7 +77,12 @@ public class Application {
 				}
 			}
 			vessel.getTracks().removeAll(tracksToRemove);
+			if (vessel.getTracks().isEmpty()) {
+				vesselsToRemove.add(vessel);
+			}
 		}
+
+		container.getVesselContainer().removeAll(vesselsToRemove);
 
 	}
 
@@ -84,9 +93,9 @@ public class Application {
 	 * @return {@link VesselContainer}
 	 */
 	private static VesselContainer fillVesselContainer() {
-		VesselContainer container = new VesselContainer();
 
-		container = CSVReader.readLargeCSV(container);
+		VesselContainer container = CSVReader.readVoyageData();
+		container = CSVReader.readDynamicData(container);
 		cleanTrackList(container);
 
 		for (Vessel vessel : container.getVesselContainer()) {
@@ -95,6 +104,19 @@ public class Application {
 
 		return container;
 
+	}
+
+	private static void countTracksAndAISMessages(VesselContainer container) {
+
+		int tracks = 0;
+		int aisMessages = 0;
+
+		for (Vessel vessel : container.getVesselContainer()) {
+			tracks += vessel.getTracks().size();
+			aisMessages += vessel.getAisMessagesUnsorted().size();
+		}
+
+		System.out.println("Tracks " + tracks + " AISMessages " + aisMessages);
 	}
 
 }

@@ -13,6 +13,8 @@ public class Vessel {
 	private ArrayList<Track> tracks;
 	private ArrayList<AISMessage> aisMessagesUnsorted;
 	private ArrayList<AISMessage> aisMessagesSorted;
+	private double length;
+	private String shipType;
 
 	public Vessel() {
 		this.aisMessagesUnsorted = new ArrayList<AISMessage>();
@@ -75,6 +77,22 @@ public class Vessel {
 
 	public void setTracks(ArrayList<Track> tracks) {
 		this.tracks = tracks;
+	}
+
+	public double getLength() {
+		return length;
+	}
+
+	public String getShipType() {
+		return shipType;
+	}
+
+	public void setLength(double length) {
+		this.length = length;
+	}
+
+	public void setShipType(String shipType) {
+		this.shipType = shipType;
 	}
 
 }
