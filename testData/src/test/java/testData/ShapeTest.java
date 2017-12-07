@@ -19,7 +19,7 @@ public class ShapeTest {
 		aisMessage.setLon(8.1501667);
 		aisMessage.setCog(74.99);
 
-		Util.findeNearestNode(aisMessage, rtm);
+		Util.findeNearestEdge(aisMessage, rtm);
 
 		System.out.println(rtm);
 
