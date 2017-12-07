@@ -63,9 +63,9 @@ public class TrafficEvaluator {
 
 		double sogTargetShip = aisMessageShip2.getSog();
 
-		Coordinate coordOS = new Coordinate(aisMessageShip1.getLat(), Math.toDegrees(aisMessageShip1.getLon()));
+		Coordinate coordOS = new Coordinate(aisMessageShip1.getLat(), aisMessageShip1.getLon());
 
-		Coordinate coordTS = new Coordinate(aisMessageShip1.getLat(), Math.toDegrees(aisMessageShip1.getLon()));
+		Coordinate coordTS = new Coordinate(aisMessageShip2.getLat(), aisMessageShip2.getLon());
 
 		LineString ownShipLine = createLineString(coordOS, cogOwnShip, 20);
 

@@ -2,6 +2,12 @@ package app.datamodel;
 
 import java.util.Date;
 
+/**
+ * Representation of dynamic AIS messages.
+ * 
+ * @author msteidel
+ *
+ */
 public class AISMessage {
 
 	private String mmsi;

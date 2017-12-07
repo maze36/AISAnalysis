@@ -8,9 +8,11 @@ import org.geotools.referencing.GeodeticCalculator;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
+import analyzer.trafficSituation.TrafficEvaluator;
 import app.datamodel.AISMessage;
 import app.datamodel.Vessel;
 import datamodel.Interval;
+import datamodel.Situation;
 import datamodel.Track;
 import output.Encounter;
 
@@ -54,6 +56,7 @@ public class Analyzer {
 			Track trackVessel1, Track trackVessel2) {
 		HashMap<String, ArrayList<AISMessage>> aisTupel = findTimeTupel(messagesV1, messagesV2);
 		Encounter result = calculateDistances(aisTupel, trackVessel1, trackVessel2);
+		Situation res = TrafficEvaluator.rightOfWay(result);
 		return result;
 	}
 
