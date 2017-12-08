@@ -3,14 +3,32 @@ package analyzer;
 import java.util.ArrayList;
 import java.util.Date;
 
+import com.vividsolutions.jts.geom.Coordinate;
+
 import app.datamodel.AISMessage;
 import app.datamodel.Vessel;
+import datamodel.CompareableTracks;
 import datamodel.Interval;
 import datamodel.Track;
+import util.Util;
 
 public class Algorithm {
 
-	public void findSituation(Vessel vessel1, Vessel vessel2) {
+	public Algorithm() {
+
+	}
+
+	/**
+	 * Iterates over all {@link Track} from each {@link Vessel} and tries to
+	 * find the two {@link Track} at which they are the closest to each other.
+	 * 
+	 * @param vessel1
+	 * @param vessel2
+	 * @return The {@link CompareableTracks} at which the two {@link Vessel} are
+	 *         closest to each other.
+	 */
+	public CompareableTracks findCompareableTracks(Vessel vessel1, Vessel vessel2) {
+		CompareableTracks compareableTracks = null;
 		if (!(vessel1.getTracks().isEmpty()) && !(vessel2.getTracks().isEmpty())) {
 			for (Track trackV1 : vessel1.getTracks()) {
 				for (Track trackV2 : vessel2.getTracks()) {
@@ -18,21 +36,55 @@ public class Algorithm {
 					if (trackInterval != null) {
 						ArrayList<AISMessage> messagesV1 = findAISMessages(trackInterval, trackV1);
 						ArrayList<AISMessage> messagesV2 = findAISMessages(trackInterval, trackV2);
-						double minDistance = findMinimumDistance(messagesV1, messagesV2);
+						compareableTracks = findMinimumDistance(vessel1, vessel2, trackV1, trackV2, messagesV1,
+								messagesV2);
 					}
 				}
 			}
 		}
+		return compareableTracks;
 	}
 
 	/**
+	 * Find the minimum distance in a series of two {@link AISMessage}.
 	 * 
 	 * @param messagesV1
+	 *            The {@link AISMessage} of the first {@link Vessel}.
 	 * @param messagesV2
-	 * @return
+	 *            The {@link AISMessage} of the second {@link Vessel}.
+	 * @return The {@link CompareableTracks}-Object which describes the CPA.
 	 */
-	private double findMinimumDistance(ArrayList<AISMessage> messagesV1, ArrayList<AISMessage> messagesV2) {
-		return 0;
+	private CompareableTracks findMinimumDistance(Vessel vessel1, Vessel vessel2, Track trackToCompareV1,
+			Track trackToCompareV2, ArrayList<AISMessage> messagesV1, ArrayList<AISMessage> messagesV2) {
+
+		double minDistance = -1;
+
+		CompareableTracks result = null;
+
+		for (int i = 0; i < messagesV1.size(); i++) {
+			AISMessage messageV1 = messagesV1.get(i);
+			AISMessage messageV2 = messagesV2.get(i);
+			System.out.println("Distance for Vessel " + messageV1.getMmsi() + " and Vessel " + messageV2.getMmsi());
+
+			if (messageV1.getSog() > 1 && messageV2.getSog() > 1) {
+
+				Coordinate start = new Coordinate(messageV1.getLat(), messageV1.getLon());
+				Coordinate end = new Coordinate(messageV2.getLat(), messageV2.getLon());
+
+				double distance = Util.calculateDistanceNM(start, end);
+
+				if (minDistance != -1) {
+					if (distance < minDistance) {
+						minDistance = distance;
+						result = new CompareableTracks(vessel1, vessel2, trackToCompareV1, trackToCompareV2, messageV1,
+								messageV2, distance);
+					}
+				}
+			}
+		}
+
+		return result;
+
 	}
 
 	/**
