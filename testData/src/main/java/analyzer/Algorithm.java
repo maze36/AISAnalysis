@@ -3,6 +3,8 @@ package analyzer;
 import java.util.ArrayList;
 import java.util.Date;
 
+import org.geotools.referencing.GeodeticCalculator;
+
 import com.vividsolutions.jts.geom.Coordinate;
 
 import app.datamodel.AISMessage;
@@ -15,7 +17,7 @@ import util.Util;
 public class Algorithm {
 
 	public Algorithm() {
-
+		new GeodeticCalculator();
 	}
 
 	/**
@@ -36,13 +38,36 @@ public class Algorithm {
 					if (trackInterval != null) {
 						ArrayList<AISMessage> messagesV1 = findAISMessages(trackInterval, trackV1);
 						ArrayList<AISMessage> messagesV2 = findAISMessages(trackInterval, trackV2);
-						compareableTracks = findMinimumDistance(vessel1, vessel2, trackV1, trackV2, messagesV1,
-								messagesV2);
+						compareableTracks = findTimeTupelWithDistance(messagesV1, messagesV2, vessel1, vessel2, trackV1,
+								trackV2);
+
 					}
 				}
 			}
 		}
 		return compareableTracks;
+	}
+
+	private CompareableTracks findTimeTupelWithDistance(ArrayList<AISMessage> messagesV1,
+			ArrayList<AISMessage> messagesV2, Vessel vessel1, Vessel vessel2, Track trackToCompareV1,
+			Track trackToCompareV2) {
+		CompareableTracks result = null;
+		for (AISMessage messageV1 : messagesV1) {
+			long timeMessage1 = messageV1.getTimestamp().getTime();
+			for (AISMessage messageV2 : messagesV2) {
+				long timeMessage2 = messageV2.getTimestamp().getTime();
+				long timeResult = timeMessage1 - timeMessage2;
+				if (timeResult >= (-10000) && timeResult <= (10000)) {
+					Coordinate start = new Coordinate();
+					Coordinate end = new Coordinate(messageV2.getLat(), messageV2.getLon());
+					double distance = Util.calculateDistanceNM(start, end);
+					result = new CompareableTracks(vessel1, vessel2, trackToCompareV1, trackToCompareV2, messageV1,
+							messageV2, distance);
+					return result;
+				}
+			}
+		}
+		return result;
 	}
 
 	/**

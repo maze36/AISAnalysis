@@ -1,21 +1,24 @@
 package app;
 
-import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.HashMap;
+
+import com.vividsolutions.jts.geom.Coordinate;
 
 import analyzer.Algorithm;
 import analyzer.Analyzer;
-import analyzer.cpa.CPAPredictor;
+import analyzer.cpa.CPACalculator;
+import app.datamodel.AISContainer;
 import app.datamodel.AISMessage;
 import app.datamodel.Vessel;
 import app.datamodel.VesselContainer;
+import datamodel.CPAResult;
 import datamodel.CompareableTracksContainer;
-import datamodel.EvaluationObject;
 import datamodel.Track;
 import input.CSVReader;
-import output.CSVWriter;
 import output.Encounter;
+import util.Util;
 
 public class Application {
 
@@ -25,63 +28,94 @@ public class Application {
 
 		ArrayList<Encounter> result = new ArrayList<Encounter>();
 
-		VesselContainer container = fillVesselContainer();
-		countTracksAndAISMessages(container);
+		HashMap<String, Object> containers = CSVReader.readCSV();
 
-		System.out.println(container.getVesselContainer().size());
+		VesselContainer vesselContainer = (VesselContainer) containers.get("VesselContainer");
+		AISContainer aisContainer = (AISContainer) containers.get("AISContainer");
+
+		cleanTrackList(vesselContainer);
 
 		Analyzer analyzer = new Analyzer();
 
-		runAlgorithm(container);
+		runAlgorithm(containers);
+	}
 
-		for (int i = 0; i < container.getVesselContainer().size(); i++) {
-			if ((container.getVesselContainer().size() - 1) > i) {
-				for (int j = i + 1; j < container.getVesselContainer().size(); j++) {
-					Encounter res = analyzer.findPairsByTracks(container.getVesselContainer().get(i),
-							container.getVesselContainer().get(j));
-					if (res != null) {
-						result.add(res);
-					}
+	private static void runAlgorithm(HashMap<String, Object> containers) {
+		Algorithm algorithm = new Algorithm();
+		CompareableTracksContainer compTracksContainer = new CompareableTracksContainer();
+
+		findAISInRange(containers);
+
+	}
+
+	/**
+	 * 
+	 * @param containers
+	 */
+	private static void findAISInRange(HashMap<String, Object> containers) {
+		AISContainer aisContainer = (AISContainer) containers.get("AISContainer");
+		VesselContainer vesselContainer = (VesselContainer) containers.get("VesselContainer");
+		ArrayList<CPAResult> otherAISMessageInRange = new ArrayList<CPAResult>();
+		for (Vessel vessel : vesselContainer.getVesselContainer()) {
+			for (Track track : vessel.getTracks()) {
+				AISMessage ais = track.getAisMessages().get(0);
+				CPAResult cpa = findOtherAISMessageInRange(ais, aisContainer);
+				if (cpa != null) {
+					otherAISMessageInRange.add(cpa);
 				}
 			}
-		}
-
-		ArrayList<EvaluationObject> evalList = new ArrayList<EvaluationObject>();
-		CPAPredictor cpaPred = new CPAPredictor();
-
-		for (Encounter encounter : result) {
-			EvaluationObject evalObj = cpaPred.predictAndCompareCPA(encounter);
-			if (evalObj != null) {
-				evalList.add(evalObj);
-			}
-		}
-
-		System.out.println("Finished predicting CPA" + new Timestamp(System.currentTimeMillis()));
-
-		CSVWriter writer = new CSVWriter();
-		try {
-			// writer.writeEvaluationCSV(evalList);
-			writer.writeEvaluationCSV(evalList);
-			System.out.println("Finished" + new Timestamp(System.currentTimeMillis()));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 
 	}
 
-	private static void runAlgorithm(VesselContainer vesselContainer) {
-		Algorithm algorithm = new Algorithm();
-		CompareableTracksContainer compTracksContainer = new CompareableTracksContainer();
-		for (int i = 0; i < vesselContainer.getVesselContainer().size(); i++) {
-			if ((vesselContainer.getVesselContainer().size() - 1) > i) {
-				for (int j = i + 1; j < vesselContainer.getVesselContainer().size(); j++) {
-					compTracksContainer.addCompareableTracks(algorithm.findCompareableTracks(
-							vesselContainer.getVesselContainer().get(i), vesselContainer.getVesselContainer().get(j)));
+	private static CPAResult findOtherAISMessageInRange(AISMessage ais, AISContainer aisContainer) {
+
+		CPAResult minTCPAResult = null;
+
+		for (AISMessage otherMessage : aisContainer.getAISMessages()) {
+			if (!otherMessage.getMmsi().equals(ais.getMmsi())) {
+
+				long timestamp1 = otherMessage.getTimestamp().getTime();
+				long timestamp2 = otherMessage.getTimestamp().getTime();
+
+				long diff = Math.abs(timestamp2 - timestamp1);
+
+				if (diff <= 10000) {
+					Coordinate start = new Coordinate(otherMessage.getLat(), otherMessage.getLon());
+					Coordinate end = new Coordinate(ais.getLat(), ais.getLon());
+					double distance = Util.calculateDistanceNM(start, end);
+
+					if (distance < 2) {
+						CPAResult cpaResult = CPACalculator.calculateCPA(ais, otherMessage);
+
+						if (minTCPAResult == null) {
+							minTCPAResult = cpaResult;
+
+							// neues Schiff überprüfen
+							if (otherShipIsCloser(otherMessage, cpaResult, aisContainer)) {
+
+							}
+						} else {
+							if (cpaResult.getCpaTime() < minTCPAResult.getCpaTime()) {
+								minTCPAResult = cpaResult;
+							}
+						}
+					}
+
 				}
+
 			}
 		}
+		return minTCPAResult;
+	}
 
+	private static boolean otherShipIsCloser(AISMessage ais, CPAResult cpaResult, AISContainer aisContainer) {
+
+		for (AISMessage otherMessage : aisContainer.getAISMessages()) {
+
+		}
+
+		return false;
 	}
 
 	private static void cleanTrackList(VesselContainer container) {
@@ -102,39 +136,6 @@ public class Application {
 
 		container.getVesselContainer().removeAll(vesselsToRemove);
 
-	}
-
-	/**
-	 * Reads the AIS message in and returns the {@link VesselContainer} with
-	 * sorted {@link AISMessage}.
-	 * 
-	 * @return {@link VesselContainer}
-	 */
-	private static VesselContainer fillVesselContainer() {
-
-		VesselContainer container = CSVReader.readVoyageData();
-		container = CSVReader.readDynamicData(container);
-		cleanTrackList(container);
-
-		for (Vessel vessel : container.getVesselContainer()) {
-			vessel.sortAISMessages();
-		}
-
-		return container;
-
-	}
-
-	private static void countTracksAndAISMessages(VesselContainer container) {
-
-		int tracks = 0;
-		int aisMessages = 0;
-
-		for (Vessel vessel : container.getVesselContainer()) {
-			tracks += vessel.getTracks().size();
-			aisMessages += vessel.getAisMessagesUnsorted().size();
-		}
-
-		System.out.println("Tracks " + tracks + " AISMessages " + aisMessages);
 	}
 
 }

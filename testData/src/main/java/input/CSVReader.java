@@ -8,8 +8,10 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 
+import app.datamodel.AISContainer;
 import app.datamodel.AISMessage;
 import app.datamodel.Vessel;
 import app.datamodel.VesselContainer;
@@ -21,6 +23,7 @@ public class CSVReader {
 	private final static String CSV_LOCATION_SMALL = "C:/Users/msteidel/Desktop/testData.csv";
 	private final static String CSV_LOCATION_DYNAMIC = "C:/Users/msteidel/Desktop/dynamicData.csv";
 	private final static String CSV_LOCATION_VOYAGE = "C:/Users/msteidel/Desktop/voyageData.csv";
+	private final static String CSV_LOCATION_DATA = "C:/Users/msteidel/Desktop/data.csv";
 	private static String LINE = "";
 	private final static String SPLITTER = ",";
 
@@ -52,7 +55,7 @@ public class CSVReader {
 							break;
 						}
 					}
-					container.get(message.getMmsi()).getAisMessagesUnsorted().add(message);
+					container.get(message.getMmsi()).getAisMessages().add(message);
 
 				} else {
 					Vessel vessel = new Vessel();
@@ -80,6 +83,56 @@ public class CSVReader {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static HashMap<String, Object> readCSV() {
+
+		VesselContainer container = new VesselContainer();
+		AISContainer aisContainer = new AISContainer();
+
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(CSV_LOCATION_DATA));
+
+			while ((LINE = reader.readLine()) != null) {
+				String[] aisString = LINE.split(SPLITTER);
+				AISMessage aisObject = new AISMessage();
+
+				aisObject.setCog(Double.valueOf(aisString[3]));
+				aisObject.setHeading(Double.valueOf(aisString[1]));
+				aisObject.setLat(Double.valueOf(aisString[7]));
+				aisObject.setLon(Double.valueOf(aisString[8]));
+				aisObject.setMmsi(aisString[0]);
+				aisObject.setRot(Double.valueOf(aisString[4]));
+				aisObject.setSog(Double.valueOf(aisString[2]));
+				aisObject.setTimestamp(transformDate(aisString[6]));
+				aisContainer.add(aisObject);
+				if (!container.vesselExists(aisObject.getMmsi())) {
+					Vessel vessel = new Vessel();
+					vessel.setMmsi(aisString[0]);
+					vessel.setLength(Double.valueOf(aisString[9]));
+					vessel.setShipType(aisString[11]);
+					vessel.addTrack(aisObject);
+					container.add(vessel);
+				} else {
+					for (Vessel vessel : container.getVesselContainer()) {
+						if (vessel.getMmsi().equals(aisObject.getMmsi())) {
+							vessel.addAISMessage(aisObject);
+							vessel.addTrack(aisObject);
+						}
+					}
+				}
+
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		HashMap<String, Object> result = new HashMap<String, Object>();
+		result.put("AISContainer", aisContainer);
+		result.put("VesselContainer", container);
+
+		return result;
 	}
 
 	public static VesselContainer readDynamicData(VesselContainer container) {
@@ -112,7 +165,7 @@ public class CSVReader {
 								break;
 							}
 						}
-						container.get(message.getMmsi()).getAisMessagesUnsorted().add(message);
+						container.get(message.getMmsi()).getAisMessages().add(message);
 
 					} else {
 						Vessel vessel = new Vessel();
@@ -194,7 +247,7 @@ public class CSVReader {
 						message.setLat(lat);
 						message.setLon(lon);
 
-						container.get(message.getMmsi()).getAisMessagesUnsorted().add(message);
+						container.get(message.getMmsi()).getAisMessages().add(message);
 
 					} else {
 						Vessel vessel = new Vessel();

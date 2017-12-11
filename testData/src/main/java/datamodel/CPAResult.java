@@ -9,8 +9,11 @@ public class CPAResult implements Comparable<CPAResult> {
 	double cpaDistance;
 	double cpaTime;
 
-	Point2D ownShipCPA;
-	Point2D otherShipCPA;
+	AISMessage aisMessage1;
+	AISMessage aisMessage2;
+
+	private Point2D ownShipCPA;
+	private Point2D otherShipCPA;
 
 	/**
 	 * 
@@ -40,6 +43,16 @@ public class CPAResult implements Comparable<CPAResult> {
 	 * Ctor
 	 */
 	public CPAResult() {
+	}
+
+	public CPAResult(AISMessage message1, AISMessage message2, double cpa, double tcpa, Point2D retDest,
+			Point2D retDest2, AISMessage message12, AISMessage message22) {
+		this.cpaDistance = cpa;
+		this.cpaTime = tcpa;
+		this.ownShipCPA = retDest;
+		this.otherShipCPA = retDest2;
+		this.aisMessage1 = message1;
+		this.aisMessage2 = message2;
 	}
 
 	public double getCpaDistance() {

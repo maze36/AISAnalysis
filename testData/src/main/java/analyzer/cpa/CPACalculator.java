@@ -148,7 +148,7 @@ public class CPACalculator {
 		Point2D retDest2 = new Point2D.Double();
 		retDest2.setLocation(destOther.getY(), destOther.getX());
 
-		return new CPAResult(message1, message2, cpa, tcpa, retDest, retDest2);
+		return new CPAResult(message1, message2, cpa, tcpa, retDest, retDest2, message1, message2);
 
 	}
 

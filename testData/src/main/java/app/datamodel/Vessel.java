@@ -11,13 +11,12 @@ public class Vessel {
 	private String mmsi;
 
 	private ArrayList<Track> tracks;
-	private ArrayList<AISMessage> aisMessagesUnsorted;
-	private ArrayList<AISMessage> aisMessagesSorted;
+	private ArrayList<AISMessage> aisMessages;
 	private double length;
 	private String shipType;
 
 	public Vessel() {
-		this.aisMessagesUnsorted = new ArrayList<AISMessage>();
+		this.aisMessages = new ArrayList<AISMessage>();
 		this.setTracks(new ArrayList<Track>());
 	}
 
@@ -25,7 +24,16 @@ public class Vessel {
 		return mmsi;
 	}
 
+	/**
+	 * Adds a the {@link AISMessage} to the existing tracks. If there are not
+	 * existing any tracks yet, a new will be created.
+	 * 
+	 * @param message
+	 *            The {@link AISMessage} to be added.
+	 * @return
+	 */
 	public boolean addTrack(AISMessage message) {
+
 		for (Track track : tracks) {
 			long timeLastMsg = track.getAisMessages().get(track.getAisMessages().size() - 1).getTimestamp().getTime();
 			long timeDiff = message.getTimestamp().getTime() - timeLastMsg;
@@ -43,8 +51,8 @@ public class Vessel {
 		return false;
 	}
 
-	public ArrayList<AISMessage> getAisMessagesUnsorted() {
-		return this.aisMessagesUnsorted;
+	public ArrayList<AISMessage> getAisMessages() {
+		return this.aisMessages;
 	}
 
 	public void setMmsi(String mmsi) {
@@ -52,23 +60,19 @@ public class Vessel {
 	}
 
 	public void setAisMessages(ArrayList<AISMessage> aisMessages) {
-		this.aisMessagesUnsorted = aisMessages;
-	}
-
-	public ArrayList<AISMessage> getAisMessagesSorted() {
-		return aisMessagesSorted;
-	}
-
-	public void setAisMessagesSorted(ArrayList<AISMessage> aisMessagesSorted) {
-		this.aisMessagesSorted = aisMessagesSorted;
+		this.aisMessages = aisMessages;
 	}
 
 	public void sortAISMessages() {
-		Collections.sort(aisMessagesUnsorted, new Comparator<AISMessage>() {
+		Collections.sort(aisMessages, new Comparator<AISMessage>() {
 			public int compare(AISMessage o1, AISMessage o2) {
 				return o1.getTimestamp().compareTo(o2.getTimestamp());
 			}
 		});
+	}
+
+	public boolean addAISMessage(AISMessage aisMessage) {
+		return this.aisMessages.add(aisMessage);
 	}
 
 	public ArrayList<Track> getTracks() {
