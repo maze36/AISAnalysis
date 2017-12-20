@@ -16,6 +16,7 @@ import app.datamodel.VesselContainer;
 import datamodel.CPAResult;
 import datamodel.CompareableTracksContainer;
 import datamodel.Track;
+import gui.GUI;
 import input.CSVReader;
 import output.Encounter;
 import util.Util;
@@ -23,6 +24,10 @@ import util.Util;
 public class Application {
 
 	public static void main(String[] args) {
+
+		GUI gui = new GUI();
+
+		gui.startGUI();
 
 		System.out.println("Start: " + new Timestamp(System.currentTimeMillis()));
 
@@ -91,7 +96,7 @@ public class Application {
 						if (minTCPAResult == null) {
 							minTCPAResult = cpaResult;
 
-							// neues Schiff überprüfen
+							// neues Schiff ï¿½berprï¿½fen
 							if (otherShipIsCloser(otherMessage, cpaResult, aisContainer)) {
 
 							}
