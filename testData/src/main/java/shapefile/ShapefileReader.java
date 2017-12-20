@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.geotools.data.DataStore;
 import org.geotools.data.DataStoreFinder;
@@ -14,7 +13,6 @@ import org.geotools.feature.FeatureCollection;
 import org.geotools.feature.FeatureIterator;
 import org.geotools.geometry.jts.JTS;
 import org.geotools.graph.build.line.BasicLineGraphGenerator;
-import org.geotools.graph.structure.Edge;
 import org.geotools.graph.structure.Graph;
 import org.geotools.referencing.CRS;
 import org.opengis.feature.Feature;
@@ -30,11 +28,14 @@ import com.vividsolutions.jts.geom.Coordinate;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.LineSegment;
 
-import datamodel.RTM;
-import datamodel.RTMEdge;
-import datamodel.RTMNode;
-
+/**
+ * Reads in a shape file and saves it in a desired format.
+ * 
+ * @author msteidel
+ *
+ */
 public class ShapefileReader {
+
 	/**
 	 * Reads in a shape and returns an {@link ArrayList} that contains the
 	 * {@link Coordinate}.
@@ -43,7 +44,6 @@ public class ShapefileReader {
 	 *            The path of the shapefile
 	 * @return
 	 */
-
 	public static Graph getRTM(String path) {
 		ArrayList<Geometry> rtmList = readShapefile(path);
 		BasicLineGraphGenerator gen = new BasicLineGraphGenerator();
@@ -56,17 +56,6 @@ public class ShapefileReader {
 		Graph graph = gen.getGraph();
 
 		return graph;
-	}
-
-	private static RTM buildRTM(ArrayList<Geometry> rtmList) {
-		RTM rtm = new RTM();
-		for (Geometry geometry : rtmList) {
-			RTMNode startNode = new RTMNode(geometry.getCoordinates()[0]);
-			RTMNode endNode = new RTMNode(geometry.getCoordinates()[1]);
-			RTMEdge edge = new RTMEdge(startNode, endNode);
-			rtm.addEdge(edge);
-		}
-		return rtm;
 	}
 
 	private static File getFile(String path) {
@@ -91,7 +80,7 @@ public class ShapefileReader {
 	}
 
 	private static ArrayList<Geometry> readShapefile(String path) {
-		File shapefile = getFile("C:/Users/msteidel/Desktop/RTM_MWotS_jun14/RTM_MWotS_jun14_clean.shp");
+		File shapefile = getFile(path);
 
 		HashMap<String, URL> connect = new HashMap<String, URL>();
 		ArrayList<Geometry> result = new ArrayList<Geometry>();
@@ -122,7 +111,6 @@ public class ShapefileReader {
 			return result;
 
 		} catch (IOException | FactoryException | MismatchedDimensionException | TransformException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
 		}
