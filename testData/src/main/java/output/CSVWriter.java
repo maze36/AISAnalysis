@@ -9,8 +9,39 @@ import java.util.HashMap;
 
 import app.datamodel.AISMessage;
 import datamodel.EvaluationObject;
+import datamodel.Track;
 
 public class CSVWriter {
+
+	public void writeTrackCSV(ArrayList<Track> tracks) throws FileNotFoundException {
+		PrintWriter pw = new PrintWriter(new File("EvaluationObject.csv"));
+		StringBuilder sb = new StringBuilder();
+		sb.append("MMSI");
+		sb.append(',');
+		sb.append("trackId");
+		sb.append(',');
+		sb.append("lat");
+		sb.append(',');
+		sb.append("lon");
+		sb.append('\n');
+
+		for (Track track : tracks) {
+			for (AISMessage message : track.getAisMessages()) {
+				sb.append(message.getMmsi());
+				sb.append(',');
+				sb.append(track.getId());
+				sb.append(',');
+				sb.append(message.getLat());
+				sb.append(',');
+				sb.append(message.getLon());
+				sb.append('\n');
+			}
+		}
+
+		pw.write(sb.toString());
+		pw.close();
+
+	}
 
 	public void writeEvaluationCSV(ArrayList<EvaluationObject> evalList) throws FileNotFoundException {
 		PrintWriter pw = new PrintWriter(new File("EvaluationObject.csv"));

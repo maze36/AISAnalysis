@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
@@ -83,6 +84,73 @@ public class CSVReader {
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	public static ArrayList<Track> createTracks() {
+
+		ArrayList<Track> trackList = new ArrayList<>();
+
+		try {
+			BufferedReader reader = new BufferedReader(new FileReader(CSV_LOCATION_DATA));
+
+			while ((LINE = reader.readLine()) != null) {
+				String[] aisString = LINE.split(SPLITTER);
+				AISMessage aisMessage = new AISMessage();
+				aisMessage.setCog(Double.valueOf(aisString[3]));
+				aisMessage.setHeading(Double.valueOf(aisString[1]));
+				aisMessage.setLat(Double.valueOf(aisString[7]));
+				aisMessage.setLon(Double.valueOf(aisString[8]));
+				aisMessage.setMmsi(aisString[0]);
+				aisMessage.setRot(Double.valueOf(aisString[4]));
+				aisMessage.setSog(Double.valueOf(aisString[2]));
+				aisMessage.setTimestamp(transformDate(aisString[6]));
+
+				if (trackList.isEmpty()) {
+					Track track = new Track(aisMessage);
+					track.setMmsi(aisMessage.getMmsi());
+					trackList.add(track);
+				} else {
+					boolean added = false;
+					for (Track track : trackList) {
+						if (track.getMmsi().equals(aisMessage.getMmsi())) {
+							if (track.addMessage(aisMessage)) {
+								added = true;
+								break;
+							}
+						}
+					}
+					if (!added) {
+						Track track = new Track(aisMessage);
+						track.setMmsi(aisMessage.getMmsi());
+						trackList.add(track);
+					}
+				}
+
+			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		return trackList;
+	}
+
+	private static boolean checkIfIsInInterval(Track track, AISMessage aisMessage) {
+		long timeLastMsg = track.getAisMessages().get(track.getAisMessages().size() - 1).getTimestamp().getTime();
+		long timeDiff = aisMessage.getTimestamp().getTime() - timeLastMsg;
+		if (timeDiff <= 150000) {
+			track.getAisMessages().add(aisMessage);
+			track.setEndDate(aisMessage.getTimestamp());
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private static boolean trackExists(Track track, AISMessage aisMessage) {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 	public static HashMap<String, Object> readCSV() {

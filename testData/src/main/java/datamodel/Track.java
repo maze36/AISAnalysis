@@ -8,6 +8,7 @@ import app.datamodel.AISMessage;
 public class Track {
 
 	private int id;
+	private String mmsi;
 	private ArrayList<AISMessage> aisMessages;
 
 	private Date startDate;
@@ -28,6 +29,7 @@ public class Track {
 
 	public Track(AISMessage message) {
 		this.startDate = message.getTimestamp();
+		this.endDate = this.startDate;
 		this.aisMessages = new ArrayList<AISMessage>();
 		this.aisMessages.add(message);
 	}
@@ -42,6 +44,19 @@ public class Track {
 
 	public ArrayList<AISMessage> getAisMessages() {
 		return aisMessages;
+	}
+
+	public boolean addMessage(AISMessage aisMessage) {
+		long timeLastMsg = this.aisMessages.get(this.aisMessages.size() - 1).getTimestamp().getTime();
+		long timeDiff = aisMessage.getTimestamp().getTime() - timeLastMsg;
+		if (timeDiff <= 150000) {
+			aisMessages.add(aisMessage);
+			setEndDate(aisMessage.getTimestamp());
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 
 	public void setAisMessages(ArrayList<AISMessage> aisMessages) {
@@ -62,6 +77,14 @@ public class Track {
 
 	public void setEndDate(Date endDate) {
 		this.endDate = endDate;
+	}
+
+	public String getMmsi() {
+		return mmsi;
+	}
+
+	public void setMmsi(String mmsi) {
+		this.mmsi = mmsi;
 	}
 
 }

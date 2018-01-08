@@ -1,12 +1,12 @@
 package app;
 
+import java.io.FileNotFoundException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.vividsolutions.jts.geom.Coordinate;
 
-import analyzer.Algorithm;
 import analyzer.Analyzer;
 import analyzer.cpa.CPACalculator;
 import app.datamodel.AISContainer;
@@ -14,10 +14,9 @@ import app.datamodel.AISMessage;
 import app.datamodel.Vessel;
 import app.datamodel.VesselContainer;
 import datamodel.CPAResult;
-import datamodel.CompareableTracksContainer;
 import datamodel.Track;
 import input.CSVReader;
-import output.Encounter;
+import output.CSVWriter;
 import util.Util;
 
 public class Application {
@@ -26,26 +25,18 @@ public class Application {
 
 		System.out.println("Start: " + new Timestamp(System.currentTimeMillis()));
 
-		ArrayList<Encounter> result = new ArrayList<Encounter>();
-
-		HashMap<String, Object> containers = CSVReader.readCSV();
-
-		VesselContainer vesselContainer = (VesselContainer) containers.get("VesselContainer");
-		AISContainer aisContainer = (AISContainer) containers.get("AISContainer");
-
-		cleanTrackList(vesselContainer);
-
+		ArrayList<Track> tracks = CSVReader.createTracks();
+		tracks = cleanTrackList(tracks);
+		System.out.println(tracks.size());
 		Analyzer analyzer = new Analyzer();
-
-		runAlgorithm(containers);
-	}
-
-	private static void runAlgorithm(HashMap<String, Object> containers) {
-		Algorithm algorithm = new Algorithm();
-		CompareableTracksContainer compTracksContainer = new CompareableTracksContainer();
-
-		findAISInRange(containers);
-
+		ArrayList<Track> tracksWithoutInfluence = analyzer.findTrackWithoutVesselInfluence(tracks);
+		CSVWriter writer = new CSVWriter();
+		try {
+			writer.writeTrackCSV(tracksWithoutInfluence);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	/**
@@ -118,24 +109,16 @@ public class Application {
 		return false;
 	}
 
-	private static void cleanTrackList(VesselContainer container) {
+	private static ArrayList<Track> cleanTrackList(ArrayList<Track> tracks) {
 		ArrayList<Track> tracksToRemove = new ArrayList<Track>();
-		ArrayList<Vessel> vesselsToRemove = new ArrayList<Vessel>();
-		for (Vessel vessel : container.getVesselContainer()) {
-			for (Track track : vessel.getTracks()) {
-				long intervalLenght = track.getEndDate().getTime() - track.getStartDate().getTime();
-				if (intervalLenght < 1200000) {
-					tracksToRemove.add(track);
-				}
-			}
-			vessel.getTracks().removeAll(tracksToRemove);
-			if (vessel.getTracks().isEmpty()) {
-				vesselsToRemove.add(vessel);
+		for (Track track : tracks) {
+			long intervalLenght = track.getEndDate().getTime() - track.getStartDate().getTime();
+			if (intervalLenght < 1200000) {
+				tracksToRemove.add(track);
 			}
 		}
-
-		container.getVesselContainer().removeAll(vesselsToRemove);
-
+		tracks.removeAll(tracksToRemove);
+		return tracks;
 	}
 
 }

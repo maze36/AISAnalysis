@@ -15,6 +15,7 @@ import datamodel.Interval;
 import datamodel.Situation;
 import datamodel.Track;
 import output.Encounter;
+import util.Util;
 
 public class Analyzer {
 
@@ -22,6 +23,59 @@ public class Analyzer {
 
 	public Analyzer() {
 		this.calculator = new GeodeticCalculator();
+	}
+
+	public ArrayList<Track> findTrackWithoutVesselInfluence(ArrayList<Track> tracks) {
+
+		ArrayList<Track> tracksWithoutInfluence = new ArrayList<Track>();
+
+		boolean isInDistance = false;
+
+		for (int i = 0; i < tracks.size(); i++) {
+			Track track1 = tracks.get(i);
+			if ((i + 1) < tracks.size()) {
+				for (int j = i + 1; j < tracks.size(); j++) {
+					Track track2 = tracks.get(j);
+					String mmsiT1 = track1.getMmsi();
+					String mmsiT2 = track2.getMmsi();
+
+					if (!mmsiT1.equals(mmsiT2)) {
+						// Intervall bilden
+						Interval interval = createInterval(track1, track2);
+						if (interval != null) {
+							if (!isInDistance(track1, track2, interval)) {
+								isInDistance = false;
+							} else {
+								isInDistance = true;
+								break;
+							}
+						}
+					}
+				}
+			}
+			if (!isInDistance) {
+				tracksWithoutInfluence.add(track1);
+			}
+		}
+		return tracksWithoutInfluence;
+	}
+
+	private boolean isInDistance(Track track1, Track track2, Interval interval) {
+		ArrayList<AISMessage> aisMessagesT1 = findAISMessages(interval, track1);
+		ArrayList<AISMessage> aisMessagesT2 = findAISMessages(interval, track2);
+
+		for (AISMessage messageT1 : aisMessagesT1) {
+			for (AISMessage messageT2 : aisMessagesT2) {
+				Coordinate start = new Coordinate(messageT1.getLat(), messageT1.getLon());
+				Coordinate end = new Coordinate(messageT2.getLat(), messageT2.getLon());
+				double distance = Util.calculateDistanceNM(start, end);
+
+				if (distance < 1) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 
 	/**
@@ -32,7 +86,7 @@ public class Analyzer {
 	 * @param vessel2
 	 * @return
 	 */
-	public Encounter findPairsByTracks(Vessel vessel1, Vessel vessel2) {
+	public ArrayList<AISMessage> findPairsByTracks(Vessel vessel1, Vessel vessel2) {
 
 		if (vessel1.getTracks().isEmpty() || vessel2.getTracks().isEmpty()) {
 			return null;
@@ -43,7 +97,17 @@ public class Analyzer {
 					if (trackInterval != null) {
 						ArrayList<AISMessage> messagesV1 = findAISMessages(trackInterval, trackV1);
 						ArrayList<AISMessage> messagesV2 = findAISMessages(trackInterval, trackV2);
-						return findRealCPA(messagesV1, messagesV2, trackV1, trackV2);
+						for (AISMessage messageV1 : messagesV1) {
+							for (AISMessage messageV2 : messagesV2) {
+								double distance = Util.calculateDistanceNM(
+										new Coordinate(messageV1.getLat(), messageV1.getLon()),
+										new Coordinate(messageV2.getLat(), messageV2.getLon()));
+								if (distance < 1) {
+									return null;
+								}
+							}
+						}
+						return messagesV1;
 					}
 				}
 			}
