@@ -33,44 +33,8 @@ public class Util {
 			if (newDistanceNodeA <= 5 || newDistanceNodeB <= 5) {
 				nearestEdges.add(edge);
 			}
-
-			// if (minDistance == -1) {
-			// if (newDistanceNodeA < newDistanceNodeB) {
-			// minDistance = newDistanceNodeA;
-			// nearestEdge = edge;
-			// } else {
-			// minDistance = newDistanceNodeA;
-			// nearestEdge = edge;
-			// }
-			// } else {
-			// if (newDistanceNodeA < newDistanceNodeB) {
-			// if (newDistanceNodeA < minDistance) {
-			// minDistance = newDistanceNodeA;
-			// nearestEdge = edge;
-			// }
-			// } else {
-			// if (newDistanceNodeB < minDistance) {
-			// minDistance = newDistanceNodeA;
-			// nearestEdge = edge;
-			// }
-			// }
-			// }
 		}
-		// Coordinate coordNodeA = (Coordinate)
-		// nearestEdge.getNodeA().getObject();
-		// Coordinate coordNodeB = (Coordinate)
-		// nearestEdge.getNodeB().getObject();
-		// double dis1 = calculateDistanceNM(vesselPos, coordNodeA);
-		// double dis2 = calculateDistanceNM(vesselPos, coordNodeB);
-		// double bearingNodeA = calculateBearing(vesselPos, coordNodeA);
-		// double bearingNodeB = calculateBearing(vesselPos, coordNodeB);
-		//
-		// double diffBearingNodeA = Math.abs(bearingNodeA -
-		// aisMessage.getCog());
-		// double diffBearingNodeB = Math.abs(bearingNodeB -
-		// aisMessage.getCog());
 
-		System.out.println(nearestEdge.toString());
 		return nearestEdge;
 	}
 
