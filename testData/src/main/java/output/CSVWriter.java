@@ -14,15 +14,26 @@ import datamodel.Track;
 public class CSVWriter {
 
 	public void writeTrackCSV(ArrayList<Track> tracks) throws FileNotFoundException {
+
+		System.out.println("Writing track list to csv...");
+
 		PrintWriter pw = new PrintWriter(new File("EvaluationObject.csv"));
 		StringBuilder sb = new StringBuilder();
 		sb.append("MMSI");
 		sb.append(',');
 		sb.append("trackId");
 		sb.append(',');
+		sb.append("cog");
+		sb.append(',');
+		sb.append("sog");
+		sb.append(',');
 		sb.append("lat");
 		sb.append(',');
 		sb.append("lon");
+		sb.append(',');
+		sb.append("start");
+		sb.append(',');
+		sb.append("end");
 		sb.append('\n');
 
 		for (Track track : tracks) {
@@ -31,9 +42,17 @@ public class CSVWriter {
 				sb.append(',');
 				sb.append(track.getId());
 				sb.append(',');
+				sb.append(message.getCog());
+				sb.append(',');
+				sb.append(message.getSog());
+				sb.append(',');
 				sb.append(message.getLat());
 				sb.append(',');
 				sb.append(message.getLon());
+				sb.append(',');
+				sb.append(track.getStartDate());
+				sb.append(',');
+				sb.append(track.getEndDate());
 				sb.append('\n');
 			}
 		}

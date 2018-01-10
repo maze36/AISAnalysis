@@ -15,16 +15,19 @@ public class Track {
 
 	private Date endDate;
 
+	private double length;
+
 	public Track(int id, ArrayList<AISMessage> aisMessages, Date startDate, Date endDate) {
 		super();
 		this.id = id;
 		this.aisMessages = aisMessages;
 		this.startDate = startDate;
 		this.endDate = endDate;
+		this.length = 0;
 	}
 
 	public Track() {
-		// TODO Auto-generated constructor stub
+		this.length = 0;
 	}
 
 	public Track(AISMessage message) {
@@ -32,6 +35,7 @@ public class Track {
 		this.endDate = this.startDate;
 		this.aisMessages = new ArrayList<AISMessage>();
 		this.aisMessages.add(message);
+		this.length = 0;
 	}
 
 	public int getId() {
@@ -85,6 +89,14 @@ public class Track {
 
 	public void setMmsi(String mmsi) {
 		this.mmsi = mmsi;
+	}
+
+	public double getLength() {
+		return length;
+	}
+
+	public void setLength(double length) {
+		this.length = length;
 	}
 
 }

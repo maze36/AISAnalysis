@@ -88,9 +88,14 @@ public class CSVReader {
 
 	public static ArrayList<Track> createTracks() {
 
+		System.out.println("Creating tracks...");
+
 		ArrayList<Track> trackList = new ArrayList<>();
 
+		int id = 0;
+
 		try {
+			@SuppressWarnings("resource")
 			BufferedReader reader = new BufferedReader(new FileReader(CSV_LOCATION_DATA));
 
 			while ((LINE = reader.readLine()) != null) {
@@ -108,6 +113,7 @@ public class CSVReader {
 				if (trackList.isEmpty()) {
 					Track track = new Track(aisMessage);
 					track.setMmsi(aisMessage.getMmsi());
+					track.setId(id);
 					trackList.add(track);
 				} else {
 					boolean added = false;
@@ -122,6 +128,8 @@ public class CSVReader {
 					if (!added) {
 						Track track = new Track(aisMessage);
 						track.setMmsi(aisMessage.getMmsi());
+						id += 1;
+						track.setId(id);
 						trackList.add(track);
 					}
 				}
@@ -129,8 +137,8 @@ public class CSVReader {
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
+			return null;
 		}
 
 		return trackList;

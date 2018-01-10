@@ -15,7 +15,6 @@ import app.datamodel.Vessel;
 import app.datamodel.VesselContainer;
 import datamodel.CPAResult;
 import datamodel.Track;
-import gui.GUI;
 import input.CSVReader;
 import output.CSVWriter;
 import util.Util;
@@ -24,17 +23,14 @@ public class Application {
 
 	public static void main(String[] args) {
 
-		GUI gui = new GUI();
-
-		gui.startGUI();
-
-		System.out.println("Start: " + new Timestamp(System.currentTimeMillis()));
+		System.out.println("App start: " + new Timestamp(System.currentTimeMillis()));
 
 		ArrayList<Track> tracks = CSVReader.createTracks();
 		tracks = cleanTrackList(tracks);
-		System.out.println(tracks.size());
 		Analyzer analyzer = new Analyzer();
 		ArrayList<Track> tracksWithoutInfluence = analyzer.findTrackWithoutVesselInfluence(tracks);
+		System.out
+				.println("Found " + tracksWithoutInfluence.size() + " tracks that are not influenced by other vessel");
 		CSVWriter writer = new CSVWriter();
 		try {
 			writer.writeTrackCSV(tracksWithoutInfluence);
@@ -42,6 +38,14 @@ public class Application {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		tracksWithoutInfluence = analyzer.calcualteTrackDistances(tracksWithoutInfluence);
+
+		ArrayList<Track> shortestTrack = analyzer.findShortestTrack(tracksWithoutInfluence);
+		ArrayList<Track> longestTrack = analyzer.findLongestTrack(tracksWithoutInfluence);
+
+		System.out.println();
+
 	}
 
 	/**

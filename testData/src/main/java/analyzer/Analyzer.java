@@ -27,6 +27,8 @@ public class Analyzer {
 
 	public ArrayList<Track> findTrackWithoutVesselInfluence(ArrayList<Track> tracks) {
 
+		System.out.println("Looking for tracks without influence...");
+
 		ArrayList<Track> tracksWithoutInfluence = new ArrayList<Track>();
 
 		boolean isInDistance = false;
@@ -289,6 +291,71 @@ public class Analyzer {
 		} else {
 			return endT2;
 		}
+	}
+
+	public ArrayList<Track> calcualteTrackDistances(ArrayList<Track> tracksWithoutInfluence) {
+
+		for (Track track : tracksWithoutInfluence) {
+			double length = 0;
+			ArrayList<AISMessage> messages = track.getAisMessages();
+			for (int i = 0; i < messages.size(); i++) {
+				if (i + 1 <= messages.size()) {
+					for (int j = i + 1; j < messages.size(); j++) {
+						Coordinate start = new Coordinate(messages.get(i).getLat(), messages.get(i).getLon());
+						Coordinate end = new Coordinate(messages.get(j).getLat(), messages.get(j).getLon());
+						length = length + Util.calculateDistanceNM(start, end);
+					}
+				}
+
+			}
+			track.setLength(length);
+		}
+
+		return tracksWithoutInfluence;
+	}
+
+	public ArrayList<Track> findLongestTrack(ArrayList<Track> tracksWithoutInfluence) {
+		double maximum = -1;
+
+		ArrayList<Track> result = new ArrayList<Track>();
+
+		for (Track track : tracksWithoutInfluence) {
+			if (maximum == -1) {
+				maximum = track.getLength();
+			} else {
+				if (track.getLength() > maximum) {
+					result.clear();
+					result.add(track);
+					maximum = track.getLength();
+				} else if (track.getLength() == maximum) {
+					result.add(track);
+				}
+			}
+		}
+
+		return result;
+	}
+
+	public ArrayList<Track> findShortestTrack(ArrayList<Track> tracksWithoutInfluence) {
+		double minimum = -1;
+
+		ArrayList<Track> result = new ArrayList<Track>();
+
+		for (Track track : tracksWithoutInfluence) {
+			if (minimum == -1) {
+				minimum = track.getLength();
+			} else {
+				if (track.getLength() < minimum) {
+					result.clear();
+					result.add(track);
+					minimum = track.getLength();
+				} else if (track.getLength() == minimum) {
+					result.add(track);
+				}
+			}
+		}
+
+		return result;
 	}
 
 }
