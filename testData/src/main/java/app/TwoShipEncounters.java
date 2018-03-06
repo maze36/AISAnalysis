@@ -1,6 +1,6 @@
 package app;
 
-import java.io.FileNotFoundException;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,36 +16,25 @@ import app.datamodel.VesselContainer;
 import datamodel.CPAResult;
 import datamodel.Track;
 import input.CSVReader;
-import output.CSVWriter;
 import util.Util;
 
-public class Application {
+public class TwoShipEncounters {
 
 	public static void main(String[] args) {
-
 		System.out.println("App start: " + new Timestamp(System.currentTimeMillis()));
 
-		ArrayList<Track> tracks = CSVReader.createTracks();
-		tracks = cleanTrackList(tracks);
+		ArrayList<Track> tracks = CSVReader.createTracksNew();
+		System.out.println("Creating tracks finished.");
+		tracks = cleanTrackListNew(tracks, 1.0);
+	
+		ArrayList<Track> finalTracks = CSVReader.appendStaticAISData(tracks);
 		Analyzer analyzer = new Analyzer();
-		ArrayList<Track> tracksWithoutInfluence = analyzer.findTrackWithoutVesselInfluence(tracks);
-		System.out
-				.println("Found " + tracksWithoutInfluence.size() + " tracks that are not influenced by other vessel");
-		CSVWriter writer = new CSVWriter();
-		try {
-			writer.writeTrackCSV(tracksWithoutInfluence);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		tracksWithoutInfluence = analyzer.calculateTrackDistances(tracksWithoutInfluence);
-
-		ArrayList<Track> shortestTrack = analyzer.findShortestTrack(tracksWithoutInfluence);
-		ArrayList<Track> longestTrack = analyzer.findLongestTrack(tracksWithoutInfluence);
-
-		System.out.println();
-
+		System.out.println("Cleaning finished.");
+		ArrayList<ArrayList<Track>> tracksWithTwoShips164 = analyzer
+				.extractTwoShipsWithInfluenceLength(finalTracks, 80, 400, 15, 3, 0.1, 3);
+		
+		
+		System.out.println("App stop: " + new Timestamp(System.currentTimeMillis()));
 	}
 
 	/**
@@ -122,12 +111,31 @@ public class Application {
 		ArrayList<Track> tracksToRemove = new ArrayList<Track>();
 		for (Track track : tracks) {
 			long intervalLenght = track.getEndDate().getTime() - track.getStartDate().getTime();
-			if (intervalLenght < 1200000) {
+			if (intervalLenght < 120000) {
 				tracksToRemove.add(track);
 			}
 		}
 		tracks.removeAll(tracksToRemove);
 		return tracks;
 	}
+	
+	private static ArrayList<Track> cleanTrackListNew(ArrayList<Track> tracks, double minLengthTrack) {
+		ArrayList<Track> tracksToRemove = new ArrayList<Track>();
+		for (Track track : tracks) {
+			long intervalLenght = track.getEndDate().getTime() - track.getStartDate().getTime();
+			double distStartEndTrack;
+			AISMessage aisMessageStart = track.getAisMessages().get(0);
+			AISMessage aisMessageEnd = track.getAisMessages().get(track.getAisMessages().size()-1);
+			Coordinate start = new Coordinate(aisMessageStart.getLat(),aisMessageStart.getLon());
+			Coordinate end = new Coordinate(aisMessageEnd.getLat(), aisMessageEnd.getLon());
+			distStartEndTrack = Util.calculateDistanceNM(start, end);
+			if (intervalLenght < 120000 && distStartEndTrack < minLengthTrack) {
+				tracksToRemove.add(track);
+			}
+		}
+		tracks.removeAll(tracksToRemove);
+		return tracks;
+	}
+	
 
 }

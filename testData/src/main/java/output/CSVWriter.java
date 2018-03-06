@@ -50,10 +50,74 @@ public class CSVWriter {
 				sb.append(',');
 				sb.append(message.getLon());
 				sb.append(',');
+				sb.append(message.getTimestamp());
+				sb.append(',');
 				sb.append(track.getStartDate());
 				sb.append(',');
 				sb.append(track.getEndDate());
 				sb.append('\n');
+			}
+		}
+
+		pw.write(sb.toString());
+		pw.close();
+
+	}
+
+	public static void writeTrackCSVArrayList(ArrayList<ArrayList<Track>> tracksWithTwoShips, String nameOfFile)
+			throws FileNotFoundException {
+
+		System.out.println("Writing track list to csv...");
+
+		PrintWriter pw = new PrintWriter(new File(nameOfFile));
+		StringBuilder sb = new StringBuilder();
+		sb.append("MMSI");
+		sb.append(',');
+		sb.append("trackId");
+		sb.append(',');
+		sb.append("cog");
+		sb.append(',');
+		sb.append("sog");
+		sb.append(',');
+		sb.append("lat");
+		sb.append(',');
+		sb.append("lon");
+		sb.append(',');
+		sb.append("timestamp");
+		sb.append(',');
+		sb.append("length");
+		sb.append(',');
+		sb.append("start");
+		sb.append(',');
+		sb.append("end");
+
+		sb.append('\n');
+
+		for (ArrayList<Track> trackWithTwoShips : tracksWithTwoShips) {
+			for (int i = 0; i <= 1; i++) {
+				for (AISMessage message : trackWithTwoShips.get(i).getAisMessages()) {
+					sb.append(message.getMmsi());
+					sb.append(',');
+					sb.append(trackWithTwoShips.get(i).getId());
+					sb.append(',');
+					sb.append(message.getCog());
+					sb.append(',');
+					sb.append(message.getSog());
+					sb.append(',');
+					sb.append(message.getLat());
+					sb.append(',');
+					sb.append(message.getLon());
+					sb.append(',');
+					sb.append(message.getTimestamp());
+					sb.append(',');
+					sb.append(trackWithTwoShips.get(i).getLength());
+					sb.append(',');
+					sb.append(trackWithTwoShips.get(i).getStartDate());
+					sb.append(',');
+					sb.append(trackWithTwoShips.get(i).getEndDate());
+
+					sb.append('\n');
+				}
 			}
 		}
 
